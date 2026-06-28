@@ -7,7 +7,6 @@ import {
 
 import { queueService } from "../services/queue.service.js";
 import { createUserSchema } from "../validators/user.validator.js";
-import { userService } from "../services/user.service.js";
 
 export async function createQueue(req: Request, res: Response) {
     const validation = createQueueSchema.safeParse(req.body);
@@ -81,19 +80,23 @@ export async function joinQueue(req: Request, res: Response) {
 
     try {
         const { queueId } = queueIdValidation.data;
-        const queue = await queueService.getById(queueId);
-        if (!queue) {
+
+        const result = await queueService.join(queueId, userValidation.data);
+
+        if (!result) {
             return res.status(404).json({
                 message: "Queue not found",
             });
         }
 
-        const newUser = await userService.create(userValidation.data);
+        const { queue, user, entry } = result;
 
         return res.status(201).json({
             message: "User joined queue",
             queueId: queue.id,
-            user: newUser,
+            user,
+            ticket: entry.ticket,
+            entry,
         });
     } catch (e) {
         console.error(e);
