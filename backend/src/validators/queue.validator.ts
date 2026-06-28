@@ -9,9 +9,9 @@ export const createQueueSchema = z.object({
 });
 
 export const queueIdParamsSchema = z.object({
-    id: z.coerce
+    queueId: z.coerce
         .number("Queue id must be a number.")
         .int("Queue id must be an integer."),
 });
 
-export type CreateQueueDto = z.infer<typeof createQueueSchema>;
+export type CreateQueue = z.infer<typeof createQueueSchema>;
