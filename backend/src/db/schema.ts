@@ -30,6 +30,7 @@ export const queues = pgTable("queues", {
     createdAt: timestamp("created_at", { withTimezone: true })
         .defaultNow()
         .notNull(),
+    nextTicket: integer("next_ticket").default(1).notNull(),
 });
 
 export const queueEntries = pgTable("queue_entries", {
@@ -40,7 +41,7 @@ export const queueEntries = pgTable("queue_entries", {
     userId: integer("user_id")
         .notNull()
         .references(() => users.id),
-    arrivalNumber: integer("arrival_number").notNull(),
+    ticket: integer("ticket").notNull(),
     status: entryStatus("status").notNull().default("waiting"),
     joinedAt: timestamp("joined_at", { withTimezone: true })
         .defaultNow()
