@@ -433,11 +433,6 @@ h2 {
     line-height: 1.5;
 }
 
-.queue-main-content {
-    display: grid;
-    gap: 22px;
-}
-
 .queue-status-card {
     padding: 28px;
 }
@@ -472,14 +467,14 @@ h2 {
     color: var(--danger);
 }
 
-.metrics-grid {
+.info-grid {
     margin-top: 25px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
 }
 
-.metric-card {
+.info-card {
     min-width: 0;
     border: 1px solid var(--line);
     border-radius: 9px;
@@ -487,18 +482,18 @@ h2 {
     background: #edf0f3;
 }
 
-.metric-card span,
-.metric-card strong {
+.info-card span,
+.info-card strong {
     display: block;
 }
 
-.metric-card span {
+.info-card span {
     margin-bottom: 7px;
     color: var(--muted);
     font-size: 0.72rem;
 }
 
-.metric-card strong {
+.info-card strong {
     overflow: hidden;
     color: var(--text);
     font-size: 1.05rem;
@@ -518,17 +513,6 @@ h2 {
 
 .section-heading h2 {
     margin-bottom: 0;
-}
-
-.list-count {
-    min-width: 32px;
-    padding: 6px 9px;
-    border-radius: 7px;
-    background: #e2e8f1;
-    color: var(--primary);
-    text-align: center;
-    font-size: 0.78rem;
-    font-weight: 850;
 }
 
 .queue-list {
@@ -638,8 +622,7 @@ h2 {
     gap: 10px;
 }
 
-.metrics-grid--operator {
-    max-width: 700px;
+.info-grid--operator {
     margin-bottom: 22px;
 }
 
@@ -695,7 +678,7 @@ h2 {
         padding: 24px 18px;
     }
 
-    .metrics-grid {
+    .info-grid {
         grid-template-columns: 1fr;
     }
 

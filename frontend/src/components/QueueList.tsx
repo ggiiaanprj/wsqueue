@@ -19,11 +19,7 @@ function QueueList({
     return (
         <section className="queue-list-card">
             <div className="section-heading">
-                <div>
-                    <h2>{title}</h2>
-                </div>
-
-                <span className="list-count">{entries.length}</span>
+                <h2>{title}</h2>
             </div>
 
             {entries.length === 0 ? (

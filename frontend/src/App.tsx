@@ -141,11 +141,6 @@ function App() {
         );
     }
 
-    function handleReset() {
-        setQueue(initialQueue.map((entry) => ({ ...entry })));
-        setActiveTab("join");
-    }
-
     return (
         <main className="app">
             <TabBar activeTab={activeTab} onChange={setActiveTab} />
@@ -169,7 +164,6 @@ function App() {
                         queue={queue}
                         onAdvance={handleAdvance}
                         onMarkLeft={handleMarkLeft}
-                        onReset={handleReset}
                     />
                 )}
             </section>

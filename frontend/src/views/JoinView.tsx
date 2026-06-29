@@ -39,9 +39,8 @@ function JoinView({ onJoin }: JoinViewProps) {
 
             <form className="join-form-card" onSubmit={handleSubmit}>
                 <div>
-                    <p>STEP 01</p>
                     <h2>Identify yourself</h2>
-                    <p>Use a name to enter the waiting room.</p>
+                    <p>Use a name to enter the waiting queue.</p>
                 </div>
 
                 <label className="input-group">

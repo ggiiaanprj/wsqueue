@@ -5,15 +5,9 @@ interface OperatorViewProps {
     queue: QueueEntry[];
     onAdvance: () => void;
     onMarkLeft: (entryId: string) => void;
-    onReset: () => void;
 }
 
-function OperatorView({
-    queue,
-    onAdvance,
-    onMarkLeft,
-    onReset,
-}: OperatorViewProps) {
+function OperatorView({ queue, onAdvance, onMarkLeft }: OperatorViewProps) {
     const activeEntries = queue.filter(
         (entry) => entry.status === "waiting" || entry.status === "ready",
     );
@@ -42,29 +36,21 @@ function OperatorView({
                     >
                         Advance queue
                     </button>
-
-                    <button
-                        type="button"
-                        className="button button--ghost"
-                        onClick={onReset}
-                    >
-                        Reset demo
-                    </button>
                 </div>
             </div>
 
-            <div className="metrics-grid metrics-grid--operator">
-                <div className="metric-card">
+            <div className="info-grid info-grid--operator">
+                <div className="info-card">
                     <span>Active</span>
                     <strong>{activeEntries.length}</strong>
                 </div>
 
-                <div className="metric-card">
+                <div className="info-card">
                     <span>Served</span>
                     <strong>{servedEntries.length}</strong>
                 </div>
 
-                <div className="metric-card">
+                <div className="info-card">
                     <span>Left</span>
                     <strong>{leftEntries.length}</strong>
                 </div>

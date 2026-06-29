@@ -6,20 +6,14 @@ interface PositionTicketProps {
     status?: QueueEntryStatus;
 }
 
-function PositionTicket({
-    position,
-    totalActive,
-    status,
-}: PositionTicketProps) {
+function PositionTicket({ position, status }: PositionTicketProps) {
     const displayPosition =
         position === null ? "--" : String(position).padStart(2, "0");
 
     const caption =
         status === "ready"
             ? "Your access is almost ready"
-            : position === null
-              ? "Not currently in queue"
-              : `${totalActive} active people in queue`;
+            : position === null && "Not currently in queue";
 
     return (
         <article className="position-ticket">
