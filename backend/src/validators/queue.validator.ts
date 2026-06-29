@@ -14,4 +14,10 @@ export const queueIdParamsSchema = z.object({
         .int("Queue id must be an integer."),
 });
 
+export const entryIdParamsSchema = z.object({
+    entryId: z.coerce
+        .number("Entry id must be a number.")
+        .int("Entry id must be an integer."),
+});
+
 export type CreateQueue = z.infer<typeof createQueueSchema>;
