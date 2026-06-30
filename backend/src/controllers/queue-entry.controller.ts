@@ -114,19 +114,19 @@ export async function advanceQueue(req: Request, res: Response) {
     }
 
     try {
-        const queue = await queueEntryService.advance(
+        const entries = await queueEntryService.advance(
             queueIdValidation.data.queueId,
         );
 
-        if (!queue) {
+        if (!entries) {
             return res.status(404).json({
-                message: "Queue is empty",
+                message: "Queue entries is empty",
             });
         }
 
         return res.status(200).json({
             message: "User advanced successfully",
-            queue,
+            entries,
         });
     } catch (e) {
         console.error(e);
@@ -149,19 +149,19 @@ export async function leaveQueue(req: Request, res: Response) {
     }
 
     try {
-        const entry = await queueEntryService.leave(
+        const entries = await queueEntryService.leave(
             entryIdValidation.data.entryId,
         );
 
-        if (!entry) {
+        if (!entries) {
             return res.status(404).json({
-                message: "Queue entry not found",
+                message: "Queue entries not found",
             });
         }
 
         return res.status(200).json({
             message: "User left queue",
-            entry,
+            entries,
         });
     } catch (e) {
         console.error(e);

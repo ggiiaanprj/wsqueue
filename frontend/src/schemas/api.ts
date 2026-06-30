@@ -71,10 +71,10 @@ export const getOverviewResponseSchema = z.object({
 
 export const advanceResponseSchema = z.object({
     message: z.string(),
-    entry: queueEntrySchema,
+    entries: queueEntrySchema,
 });
 
 export const leaveResponseSchema = z.object({
     message: z.string(),
-    entry: queueEntrySchema,
+    entries: queueEntrySchema,
 });

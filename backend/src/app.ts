@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 
 import { queueRouter } from "./routes/queue.routes.js";
+import { queueEntryRouter } from "./routes/queue-entry.router.js";
 
 const allowedOrigins = ["http://localhost:5173"];
 
@@ -25,3 +26,4 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/queue", queueRouter);
+app.use("/queue-entry", queueEntryRouter);
