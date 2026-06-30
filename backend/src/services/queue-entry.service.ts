@@ -1,4 +1,4 @@
-import { asc, and, eq } from "drizzle-orm";
+import { asc, and, eq, lt, count } from "drizzle-orm";
 import { db } from "../db/db.js";
 import { queueEntries, users } from "../db/schema.js";
 
@@ -30,15 +30,32 @@ export const queueEntryService = {
     },
 
     async getUserQueueInfo(queueId: number, entryId: number) {
-        const entries = await this.getActiveByQueueId(queueId);
+        const [entry] = await db
+            .select()
+            .from(queueEntries)
+            .where(
+                and(
+                    eq(queueEntries.id, entryId),
+                    eq(queueEntries.queueId, queueId),
+                ),
+            );
 
-        const entryIndex = entries.findIndex((entry) => entry.id === entryId);
+        if (!entry || entry.status !== "waiting") {
+            return null;
+        }
 
-        if (entryIndex === -1) return null;
+        const result = await db
+            .select({ ahead: count() })
+            .from(queueEntries)
+            .where(
+                and(
+                    eq(queueEntries.queueId, queueId),
+                    eq(queueEntries.status, "waiting"),
+                    lt(queueEntries.joinedAt, entry.joinedAt),
+                ),
+            );
 
-        const entry = entries[entryIndex];
-
-        if (!entry) return null;
+        const ahead = result[0]?.ahead ?? 0;
 
         return {
             entryId: entry.id,
@@ -46,12 +63,12 @@ export const queueEntryService = {
             userId: entry.userId,
             ticket: entry.ticket,
             status: entry.status,
-            currentPosition: entry.currentPosition,
-            peopleAhead: entry.currentPosition - 1,
+            currentPosition: ahead + 1,
+            peopleAhead: ahead,
         };
     },
 
-    async getQueueOverview(queuId: number) {
+    async getQueueOverview(queueId: number) {
         const entries = await db
             .select({
                 entryId: queueEntries.id,
@@ -61,7 +78,7 @@ export const queueEntryService = {
             })
             .from(queueEntries)
             .innerJoin(users, eq(queueEntries.userId, users.id))
-            .where(eq(queueEntries.queueId, queuId))
+            .where(eq(queueEntries.queueId, queueId))
             .orderBy(asc(queueEntries.joinedAt));
 
         const activeEntries = entries.filter(
@@ -113,7 +130,12 @@ export const queueEntryService = {
         const [entry] = await db
             .update(queueEntries)
             .set({ status: "left" })
-            .where(eq(queueEntries.id, entryId))
+            .where(
+                and(
+                    eq(queueEntries.id, entryId),
+                    eq(queueEntries.status, "waiting"),
+                ),
+            )
             .returning();
 
         return entry;
