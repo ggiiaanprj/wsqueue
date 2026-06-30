@@ -1,19 +1,13 @@
-import type { QueueEntryStatus } from "../types/queue";
+import type { EntryStatus } from "../types/api";
 
 interface PositionTicketProps {
     position: number | null;
-    totalActive: number;
-    status?: QueueEntryStatus;
+    status?: EntryStatus;
 }
 
-function PositionTicket({ position, status }: PositionTicketProps) {
+function PositionTicket({ position }: PositionTicketProps) {
     const displayPosition =
         position === null ? "--" : String(position).padStart(2, "0");
-
-    const caption =
-        status === "ready"
-            ? "Your access is almost ready"
-            : position === null && "Not currently in queue";
 
     return (
         <article className="position-ticket">
@@ -24,7 +18,6 @@ function PositionTicket({ position, status }: PositionTicketProps) {
 
             <span className="ticket-kicker">CURRENT POSITION</span>
             <strong className="ticket-number">{displayPosition}</strong>
-            <span className="ticket-caption">{caption}</span>
         </article>
     );
 }

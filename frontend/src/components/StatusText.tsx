@@ -1,12 +1,11 @@
-import type { QueueEntryStatus } from "../types/queue";
+import type { EntryStatus } from "../types/api";
 
 interface StatusTextProps {
-    status: QueueEntryStatus;
+    status: EntryStatus;
 }
 
-const statusLabels: Record<QueueEntryStatus, string> = {
+const statusLabels: Record<EntryStatus, string> = {
     waiting: "Waiting",
-    ready: "Your turn soon",
     served: "Served",
     left: "Left",
 };
