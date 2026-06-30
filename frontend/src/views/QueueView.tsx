@@ -76,14 +76,14 @@ function QueueView({
                         <h1>Welcome, {currentUser.name}</h1>
                     </div>
 
-                    <StatusText status={userInfo?.status} />
+                    {userInfo && <StatusText status={userInfo?.status} />}
                 </div>
 
                 <p className="page-description">
                     Your position will update instantly as the queue moves.
                 </p>
 
-                <div className="info-grid">
+                <div className="info-grid info-grid--queue">
                     <div className="info-card">
                         <span>Ticket</span>
                         <strong>#{userInfo?.ticket ?? "0"}</strong>

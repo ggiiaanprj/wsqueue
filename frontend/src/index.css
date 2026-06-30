@@ -422,7 +422,6 @@ h2 {
     color: var(--surface-dark);
     font-size: clamp(4.5rem, 10vw, 7rem);
     line-height: 0.9;
-    letter-spacing: -0.1em;
 }
 
 .ticket-caption {
@@ -470,7 +469,6 @@ h2 {
 .info-grid {
     margin-top: 25px;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
 }
 
@@ -623,7 +621,12 @@ h2 {
 }
 
 .info-grid--operator {
-    margin-bottom: 22px;
+    margin-bottom: 23px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.info-grid--queue {
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .app-footer {

@@ -7,7 +7,7 @@ interface PositionTicketProps {
 
 function PositionTicket({ position }: PositionTicketProps) {
     const displayPosition =
-        position === null ? "--" : String(position).padStart(2, "0");
+        position === null ? "0" : String(position).padStart(2, "0");
 
     return (
         <article className="position-ticket">

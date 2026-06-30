@@ -5,11 +5,12 @@ import "./index.css";
 import TabBar from "./components/TabBar";
 import type { AppTab } from "./components/TabBar";
 
-import JoinView from "./views/JoinView";
-import QueueView from "./views/QueueView";
-// import OperatorView from "./views/OperatorView";
 import { queueService } from "./services/queue.service";
 import { queueEntryService } from "./services/queue-entry.service";
+
+import JoinView from "./views/JoinView";
+import QueueView from "./views/QueueView";
+import OperatorView from "./views/OperatorView";
 
 const QUEUE_ID = 1;
 
@@ -25,8 +26,6 @@ function App() {
     async function handleJoin(name: string) {
         try {
             const result = await queueService.join(QUEUE_ID, name);
-
-            console.log("User Joined", result);
 
             setCurrentUser({
                 entryId: result.entry.id,
@@ -51,22 +50,6 @@ function App() {
         }
     }
 
-    // async function handleAdvance() {
-    //     try {
-    //         await queueEntryService.advance(QUEUE_ID);
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // }
-
-    // async function handleMarkLeft(entryId: number) {
-    //     try {
-    //         await queueEntryService.leave(QUEUE_ID, entryId);
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // }
-
     return (
         <main className="app">
             <TabBar activeTab={activeTab} onChange={setActiveTab} />
@@ -83,13 +66,9 @@ function App() {
                     />
                 )}
 
-                {/* {activeTab === "operator" && (
-                    <OperatorView
-                        queueId={QUEUE_ID}
-                        onAdvance={handleAdvance}
-                        onMarkLeft={handleMarkLeft}
-                    />
-                )} */}
+                {activeTab === "operator" && (
+                    <OperatorView queueId={QUEUE_ID} />
+                )}
             </section>
         </main>
     );

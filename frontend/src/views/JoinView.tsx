@@ -33,7 +33,7 @@ function JoinView({ onJoin }: JoinViewProps) {
                 <div className="feature-list">
                     <span>Position updates</span>
                     <span>Ticket number</span>
-                    <span>Operator-controlled simulation</span>
+                    <span>Panel Operator simulation</span>
                 </div>
             </div>
 

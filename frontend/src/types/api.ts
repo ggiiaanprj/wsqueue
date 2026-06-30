@@ -1,64 +1,27 @@
-export interface Queue {
-    id: number;
-    name: string;
-    nextTicket: number;
-}
+import type { z } from "zod";
+import type {
+    entryStatusSchema,
+    queueSchema,
+    queueEntrySchema,
+    queueEntryWithNameSchema,
+    queueOverviewSchema,
+    userQueueInfoSchema,
+    joinQueueResponseSchema,
+    getUserInfoResponseSchema,
+    getOverviewResponseSchema,
+    advanceResponseSchema,
+    leaveResponseSchema,
+} from "../schemas/api";
 
-export interface User {
-    id: number;
-    name: string;
-}
+export type EntryStatus = z.infer<typeof entryStatusSchema>;
+export type Queue = z.infer<typeof queueSchema>;
+export type QueueEntry = z.infer<typeof queueEntrySchema>;
+export type QueueEntryWithName = z.infer<typeof queueEntryWithNameSchema>;
+export type QueueOverview = z.infer<typeof queueOverviewSchema>;
+export type UserQueueInfo = z.infer<typeof userQueueInfoSchema>;
 
-export type EntryStatus = "waiting" | "served" | "left";
-
-export interface QueueEntry {
-    id: number;
-    queueId: number;
-    userId: number;
-    ticket: number;
-    status: EntryStatus;
-    joinedAt: string;
-}
-
-export interface QueueEntryWithPosition extends QueueEntry {
-    currentPosition: number;
-}
-
-export interface QueueEntryWithName {
-    name: string;
-    ticket: number;
-    status: EntryStatus;
-}
-
-export interface QueueOverview {
-    stats: {
-        active: number;
-        served: number;
-        left: number;
-    };
-    entries: QueueEntryWithName[];
-}
-
-export interface JoinQueue {
-    message: string;
-    queueId: number;
-    user: {
-        name: string;
-    };
-    entry: {
-        id: number;
-        ticket: number;
-        status: EntryStatus;
-        joinedAt: string;
-    };
-}
-
-export interface UserQueueInfo {
-    entryId: number;
-    queueId: number;
-    userId: number;
-    ticket: number;
-    status: EntryStatus;
-    currentPosition: number;
-    peopleAhead: number;
-}
+export type JoinQueue = z.infer<typeof joinQueueResponseSchema>;
+export type GetUserInfoResponse = z.infer<typeof getUserInfoResponseSchema>;
+export type GetOverviewResponse = z.infer<typeof getOverviewResponseSchema>;
+export type AdvanceResponse = z.infer<typeof advanceResponseSchema>;
+export type LeaveResponse = z.infer<typeof leaveResponseSchema>;

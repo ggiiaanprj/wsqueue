@@ -1,8 +1,11 @@
+import type { ZodType } from "zod";
+
 export const API_BASE_URL =
     import.meta.env.VITE_BASE_URL ?? "http://localhost:3000";
 
 export async function apiFetch<T>(
     path: string,
+    schema: ZodType<T>,
     options?: RequestInit,
 ): Promise<T> {
     const res = await fetch(`${API_BASE_URL}${path}`, {
@@ -15,8 +18,16 @@ export async function apiFetch<T>(
 
     if (!res.ok) {
         const e = await res.json().catch(() => ({ message: res.statusText }));
-        return e.message;
+        throw new Error(e.message ?? "Api response");
     }
 
-    return res.json() as Promise<T>;
+    const data = await res.json();
+    const validation = schema.safeParse(data);
+
+    if (!validation.success) {
+        console.error("Api response validation", validation.error.issues);
+        throw new Error("Api response");
+    }
+
+    return validation.data;
 }

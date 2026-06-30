@@ -1,70 +1,118 @@
-// import type { QueueEntry } from "../types/api";
-// import QueueList from "../components/QueueList";
+import { useEffect, useState } from "react";
 
-// interface OperatorViewProps {
-//     queueId: number;
-//     onAdvance: () => void;
-//     onMarkLeft: (entryId: number) => void;
-// }
+import { queueEntryService } from "../services/queue-entry.service";
 
-// function OperatorView({ onAdvance, onMarkLeft }: OperatorViewProps) {
-//     const activeEntries = queue.filter(
-//         (entry) => entry.status === "waiting" || entry.status === "ready",
-//     );
+import type { QueueOverview } from "../types/api";
 
-//     const servedEntries = queue.filter((entry) => entry.status === "served");
-//     const leftEntries = queue.filter((entry) => entry.status === "left");
+import QueueList from "../components/QueueList";
 
-//     const orderedQueue = [...queue].sort(
-//         (a, b) => a.arrivalNumber - b.arrivalNumber,
-//     );
+interface OperatorViewProps {
+    queueId: number;
+}
 
-//     return (
-//         <section className="operator-layout">
-//             <div className="operator-heading">
-//                 <div>
-//                     <p>OPERATOR PANEL</p>
-//                     <h1>Control the queue simulation.</h1>
-//                 </div>
+function OperatorView({ queueId }: OperatorViewProps) {
+    const [panel, setPanel] = useState<QueueOverview | null>(null);
 
-//                 <div className="operator-actions">
-//                     <button
-//                         type="button"
-//                         className="button button--primary"
-//                         onClick={onAdvance}
-//                         disabled={activeEntries.length === 0}
-//                     >
-//                         Advance queue
-//                     </button>
-//                 </div>
-//             </div>
+    useEffect(() => {
+        let cancelled = false;
 
-//             <div className="info-grid info-grid--operator">
-//                 <div className="info-card">
-//                     <span>Active</span>
-//                     <strong>{activeEntries.length}</strong>
-//                 </div>
+        async function fetchOverview() {
+            try {
+                const result = await queueEntryService.getOverview(queueId);
 
-//                 <div className="info-card">
-//                     <span>Served</span>
-//                     <strong>{servedEntries.length}</strong>
-//                 </div>
+                console.log(result);
 
-//                 <div className="info-card">
-//                     <span>Left</span>
-//                     <strong>{leftEntries.length}</strong>
-//                 </div>
-//             </div>
+                if (!cancelled) {
+                    setPanel(result.panel);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
 
-//             <QueueList
-//                 title="Current queue"
-//                 entries={orderedQueue}
-//                 emptyMessage="There are no entries yet."
-//                 showOperatorActions
-//                 onMarkLeft={onMarkLeft}
-//             />
-//         </section>
-//     );
-// }
+        fetchOverview();
 
-// export default OperatorView;
+        return () => {
+            cancelled = true;
+        };
+    }, [queueId]);
+
+    async function refetchOverview() {
+        try {
+            const result = await queueEntryService.getOverview(queueId);
+            setPanel(result.panel);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function handleAdvance() {
+        try {
+            await queueEntryService.advance(queueId);
+            await refetchOverview();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function handleMarkLeft(entryId: number) {
+        try {
+            await queueEntryService.leave(queueId, entryId);
+            await refetchOverview();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const stats = panel?.stats ?? { active: 0, served: 0, left: 0 };
+    const entries = panel?.entries ?? [];
+
+    return (
+        <section className="operator-layout">
+            <div className="operator-heading">
+                <div>
+                    <p>OPERATOR PANEL</p>
+                    <h1>Control the queue simulation.</h1>
+                </div>
+
+                <div className="operator-actions">
+                    <button
+                        type="button"
+                        className="button button--primary"
+                        onClick={handleAdvance}
+                        disabled={stats.active === 0}
+                    >
+                        Advance queue
+                    </button>
+                </div>
+            </div>
+
+            <div className="info-grid info-grid--operator">
+                <div className="info-card">
+                    <span>Active</span>
+                    <strong>{stats.active}</strong>
+                </div>
+
+                <div className="info-card">
+                    <span>Served</span>
+                    <strong>{stats.served}</strong>
+                </div>
+
+                <div className="info-card">
+                    <span>Left</span>
+                    <strong>{stats.left}</strong>
+                </div>
+            </div>
+
+            <QueueList
+                title="Current queue"
+                entries={entries}
+                emptyMessage="There are no entries yet."
+                showOperatorActions
+                onMarkLeft={handleMarkLeft}
+            />
+        </section>
+    );
+}
+
+export default OperatorView;
