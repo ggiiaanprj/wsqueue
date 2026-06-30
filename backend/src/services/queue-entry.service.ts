@@ -54,6 +54,7 @@ export const queueEntryService = {
     async getQueueOverview(queuId: number) {
         const entries = await db
             .select({
+                entryId: queueEntries.id,
                 name: users.name,
                 ticket: queueEntries.ticket,
                 status: queueEntries.status,
