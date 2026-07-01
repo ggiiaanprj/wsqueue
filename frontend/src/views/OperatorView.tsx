@@ -5,6 +5,7 @@ import { queueEntryService } from "../services/queue-entry.service";
 import type { QueueOverview } from "../types/api";
 
 import QueueList from "../components/QueueList";
+import { useQueueSocket } from "../lib/useQueueSocket";
 
 interface OperatorViewProps {
     queueId: number;
@@ -19,8 +20,6 @@ function OperatorView({ queueId }: OperatorViewProps) {
         async function fetchOverview() {
             try {
                 const result = await queueEntryService.getOverview(queueId);
-
-                console.log(result);
 
                 if (!cancelled) {
                     setPanel(result.panel);
@@ -63,6 +62,8 @@ function OperatorView({ queueId }: OperatorViewProps) {
             console.error(e);
         }
     }
+
+    useQueueSocket(queueId, refetchOverview);
 
     const stats = panel?.stats ?? { active: 0, served: 0, left: 0 };
     const entries = panel?.entries ?? [];

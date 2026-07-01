@@ -4,6 +4,7 @@ import {
     queueIdParamsSchema,
 } from "../validators/queue.validator.js";
 import { queueEntryService } from "../services/queue-entry.service.js";
+import { broadcastQueueUpdate } from "../ws/socket-server.js";
 
 export async function getQueueEntries(req: Request, res: Response) {
     const queueIdValidation = queueIdParamsSchema.safeParse(req.params);
@@ -124,6 +125,8 @@ export async function advanceQueue(req: Request, res: Response) {
             });
         }
 
+        broadcastQueueUpdate(queueIdValidation.data.queueId);
+
         return res.status(200).json({
             message: "User advanced successfully",
             entries,
@@ -158,6 +161,8 @@ export async function leaveQueue(req: Request, res: Response) {
                 message: "Queue entries not found",
             });
         }
+
+        broadcastQueueUpdate(queueIdValidation.data.queueId);
 
         return res.status(200).json({
             message: "User left queue",

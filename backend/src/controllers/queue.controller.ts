@@ -7,6 +7,7 @@ import {
 
 import { queueService } from "../services/queue.service.js";
 import { createUserSchema } from "../validators/user.validator.js";
+import { broadcastQueueUpdate } from "../ws/socket-server.js";
 
 export async function createQueue(req: Request, res: Response) {
     const validation = createQueueSchema.safeParse(req.body);
@@ -88,6 +89,8 @@ export async function joinQueue(req: Request, res: Response) {
                 message: "Queue not found",
             });
         }
+
+        broadcastQueueUpdate(queueId);
 
         const { queue, user, entry } = result;
 

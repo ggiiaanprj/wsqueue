@@ -3,6 +3,7 @@ import StatusText from "../components/StatusText";
 import { useEffect, useState } from "react";
 import { queueEntryService } from "../services/queue-entry.service";
 import type { UserQueueInfo } from "../types/api";
+import { useQueueSocket } from "../lib/useQueueSocket";
 
 interface CurrentUser {
     entryId: number;
@@ -13,13 +14,24 @@ interface QueueViewProps {
     queueId: number;
     currentUser: CurrentUser | null;
     onLeave: () => void;
+    onEntryGone: () => void;
     onGoToJoin: () => void;
+}
+
+function isNotFound(e: unknown): boolean {
+    return (
+        typeof e === "object" &&
+        e !== null &&
+        "status" in e &&
+        (e as { status?: number }).status === 404
+    );
 }
 
 function QueueView({
     queueId,
     currentUser,
     onLeave,
+    onEntryGone,
     onGoToJoin,
 }: QueueViewProps) {
     const [userInfo, setUserInfo] = useState<UserQueueInfo | null>(null);
@@ -27,20 +39,53 @@ function QueueView({
     useEffect(() => {
         if (!currentUser) return;
 
+        let cancelled = false;
+
         async function fetchInfo() {
             try {
                 const result = await queueEntryService.getUserInfo(
                     queueId,
                     currentUser!.entryId,
                 );
-                setUserInfo(result.userInfo);
+
+                if (!cancelled) {
+                    setUserInfo(result.userInfo);
+                }
             } catch (e) {
+                if (isNotFound(e)) {
+                    if (!cancelled) onEntryGone();
+                    return;
+                }
                 console.error(e);
             }
         }
 
         fetchInfo();
+
+        return () => {
+            cancelled = true;
+        };
     }, [queueId, currentUser]);
+
+    async function refetchInfo() {
+        if (!currentUser) return;
+
+        try {
+            const result = await queueEntryService.getUserInfo(
+                queueId,
+                currentUser.entryId,
+            );
+            setUserInfo(result.userInfo);
+        } catch (e) {
+            if (isNotFound(e)) {
+                onEntryGone();
+                return;
+            }
+            console.error(e);
+        }
+    }
+
+    useQueueSocket(queueId, refetchInfo);
 
     if (!currentUser) {
         return (
@@ -76,7 +121,7 @@ function QueueView({
                         <h1>Welcome, {currentUser.name}</h1>
                     </div>
 
-                    {userInfo && <StatusText status={userInfo?.status} />}
+                    {userInfo && <StatusText status={userInfo.status} />}
                 </div>
 
                 <p className="page-description">

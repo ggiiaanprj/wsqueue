@@ -50,6 +50,11 @@ function App() {
         }
     }
 
+    function handleEntryGone() {
+        setCurrentUser(null);
+        setActiveTab("join");
+    }
+
     return (
         <main className="app">
             <TabBar activeTab={activeTab} onChange={setActiveTab} />
@@ -62,6 +67,7 @@ function App() {
                         queueId={QUEUE_ID}
                         currentUser={currentUser}
                         onLeave={handleLeave}
+                        onEntryGone={handleEntryGone}
                         onGoToJoin={() => setActiveTab("join")}
                     />
                 )}
